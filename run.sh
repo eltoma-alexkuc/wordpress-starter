@@ -172,7 +172,9 @@ init() {
         theme_deps[twentynineteen]=twentynineteen
     fi
 
-    sudo chown -R admin:admin /app
+    # supressing errors due to Docker on Mac issue
+    # https://github.com/docker/compose/issues/3270
+    sudo chown -R --silent admin:admin /app
 
     if [[ ! -f /app/wp-settings.php ]]; then
         h2 'Downloading WordPress'
