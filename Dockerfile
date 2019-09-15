@@ -6,6 +6,8 @@ LABEL maintainer="Derek P Sifford <dereksifford@gmail.com>" \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+COPY sendmailconfig.sh /usr/local/sbin/sendmailconfig.sh
+
 # Install base requirements & sensible defaults + required PHP extensions
 # hadolint ignore=DL3008
 RUN echo "deb http://ftp.debian.org/debian $(sed -n 's/^VERSION=.*(\(.*\)).*/\1/p' /etc/os-release)-backports main" >> /etc/apt/sources.list \
@@ -25,6 +27,9 @@ RUN echo "deb http://ftp.debian.org/debian $(sed -n 's/^VERSION=.*(\(.*\)).*/\1/
         unzip \
         vim \
         zip \
+        expect \
+        sendmail \
+    && /usr/local/sbin/sendmailconfig.sh \
     && apt-get -t "$(sed -n 's/^VERSION=.*(\(.*\)).*/\1/p' /etc/os-release)-backports" install -y --no-install-recommends \
         python-certbot-apache \
     && rm -rf /var/lib/apt/lists/* \
