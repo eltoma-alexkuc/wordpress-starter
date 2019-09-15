@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
+echo 'Manual building via build.sh is not really supported...'
+echo 'Examine build.sh as a starting point and then figure what to do next...'
+
+exit 1
+
 # Ascending order is important here
 declare -a php_versions=(
-    # 7.0
-    # 7.1
-    # 7.2
+    7.0
+    7.1
+    7.2
     7.3
 )
 declare npm_package_version="${npm_package_version?Script must be run using npm}"
@@ -18,12 +23,13 @@ for php_version in "${php_versions[@]}"; do
     docker build \
         --build-arg PHP_VERSION="$php_version" \
         --build-arg VERSION="$npm_package_version" \
-        -t "eltomacorp/wordpress:easy-starter" \
+        -t "visiblevc/wordpress:latest" \
+        -t "visiblevc/wordpress:latest-php${php_version}" \
+        -t "visiblevc/wordpress:$npm_package_version-php${php_version}" \
         "$dockerfile_dir"
 done
 
 echo "
-
 Successfully built images with the following tags:"
 
-docker image ls eltomacorp/wordpress:easy-starter
+docker images visiblevc/wordpress --format "{{.Tag}}" | sort -r
