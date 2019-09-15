@@ -1,5 +1,5 @@
 version: v1.0
-name: Build WordPress image for Docker CI
+name: Build Docker image
 agent:
   machine:
     type: e1-standard-2
@@ -10,14 +10,14 @@ fail_fast:
     when: "true"
 
 blocks:
-  - name: Build master branch
+  - name: Master branch
     skip:
       when: "branch != 'master'"
     task:
       secrets:
         - name: docker-password
       jobs:
-        - name: Build on master branch
+        - name: Build from master branch
           commands:
             - checkout
             - docker build -t eltomacorp/wordpress:latest .
@@ -27,14 +27,14 @@ blocks:
             - echo $DOCKER_PASSWORD | docker login -u eltomacorp --password-stdin
             - docker push eltomacorp/wordpress:latest
 
-  - name: Build non-master branch
+  - name: Non-master branch
     skip:
       when: "branch = 'master'"
     task:
       secrets:
         - name: docker-password
       jobs:
-        - name: Build on non-master branch
+        - name: Build from non-master branch
           commands:
             - checkout
             - docker build -t eltomacorp/wordpress:$SEMAPHORE_GIT_BRANCH .
