@@ -32,6 +32,7 @@ RUN echo "deb http://ftp.debian.org/debian $(sed -n 's/^VERSION=.*(\(.*\)).*/\1/
     && docker-php-ext-configure zip --with-libzip \
     && pecl install imagick \
     && pecl install redis \
+    && pecl install xdebug \
     && docker-php-ext-install \
         bcmath \
         exif \
@@ -44,6 +45,7 @@ RUN echo "deb http://ftp.debian.org/debian $(sed -n 's/^VERSION=.*(\(.*\)).*/\1/
         pdo_mysql \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable xdebug \
     # See https://secure.php.net/manual/en/opcache.installation.php
     && echo 'memory_limit = 512M' >> /usr/local/etc/php/php.ini \
     && { \
@@ -89,6 +91,8 @@ RUN useradd -ms /bin/bash -G sudo admin \
         0 > /etc/fstab
 
 USER admin
+# explanation for not having /var/www/html as workdir
+# https://github.com/visiblevc/wordpress-starter/pull/136
 WORKDIR /app
 EXPOSE 80 443
 CMD ["/run.sh"]
